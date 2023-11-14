@@ -12,6 +12,7 @@
   "dependencies": {
     "@algorandfoundation/algokit-utils": "^4.1.0",
     "@metamask/sdk-react": "^0.12.1",
+    "@solana/web3.js": "^1.87.6",
     "algosdk": "^2.7.0",
     "buffer": "^6.0.3",
     "ethereumjs-util": "^7.1.5",

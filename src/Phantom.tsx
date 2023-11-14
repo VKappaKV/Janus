@@ -93,71 +93,89 @@ export default function App() {
     return <h2>Could not find a provider</h2>;
   }
 
-  const initLsig = async (pk) => {
+  const initLsig = async (pk: string | undefined) => {
     const lsig = await createLogicSignatureEd25519(pk);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setLsig((v) => (v = lsig.address()));
     console.log(lsig);
     console.log(lsig.address());
     const smartSigTxn = await initOperation(lsig);
-    const result = await signMessage(smartSigTxn.rawTxID());
-    await sendLsigTxn(lsig, result[0], result[1], smartSigTxn);
+    const { signature_uint8, uint8array_encoded } = await signMessage(
+      smartSigTxn.rawTxID()
+    );
+    await sendLsigTxn(lsig, signature_uint8, uint8array_encoded, smartSigTxn);
   };
 
-  function hexToUint8Array(hex_data) {
-    return new Uint8Array(
-      hex_data.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
-    );
+  function hexToUint8Array(hex_data: string): Uint8Array | null {
+    // Check if the hexadecimal string has an even length
+    if (hex_data.length % 2 !== 0) {
+      console.error("Invalid hexadecimal string length");
+      return null;
+    }
+
+    try {
+      // Use a regular expression to split the string into pairs of two characters
+      const pairs = hex_data.match(/.{1,2}/g);
+
+      // Check if pairs is not null
+      if (pairs === null) {
+        console.error("Error splitting the hexadecimal string");
+        return null;
+      }
+
+      // Convert each pair to a byte and create a Uint8Array
+      const uint8Array = new Uint8Array(
+        pairs.map((byte) => parseInt(byte, 16))
+      );
+
+      return uint8Array;
+    } catch (error) {
+      console.error("Error converting hexadecimal string to Uint8Array", error);
+      return null;
+    }
   }
 
   //requires Uint8Array parameters
-  const verifyEd25519Signature = (message, signature, publicKey) => {
-    const signatureData = hexToUint8Array(signature);
-    const publicKeyData = hexToUint8Array(publicKey);
+  const verifyEd25519Signature = (
+    message: Uint8Array,
+    signature: string,
+    publicKey: string | undefined
+  ) => {
+    const signatureData = hexToUint8Array(signature) ?? new Uint8Array();
+    const publicKeyData = hexToUint8Array(publicKey) ?? new Uint8Array();
     return nacl.sign.detached.verify(message, signatureData, publicKeyData);
   };
 
-  const signMessage = async (dataInput) => {
-    try {
-      let data_uint8array = new Uint8Array([
-        97, 54, 50, 57, 101, 101, 57, 99, 50, 50, 54, 98, 98, 101, 55, 51, 100,
-        100, 99, 101, 101, 101, 101, 50, 49, 102, 54, 52, 98, 52, 51, 100, 102,
-        55, 55, 55, 56, 56, 55, 55, 48, 54, 52, 48, 52, 54, 50, 99, 53, 55, 99,
-        101, 53, 54, 57, 97, 56, 53, 56, 54, 54, 54, 56, 51,
-      ]);
-      data_uint8array = new Uint8Array(dataInput); // or with input
-      console.log("Original txid in uint8array: " + data_uint8array);
+  const signMessage = async (dataInput: Uint8Array) => {
+    const data_uint8array = new Uint8Array(dataInput); // or with input
+    console.log("Original txid in uint8array: " + data_uint8array);
 
-      const data_uint8array_to_hex =
-        Buffer.from(data_uint8array).toString("hex");
-      console.log("Txid in hex: " + data_uint8array_to_hex);
+    const data_uint8array_to_hex = Buffer.from(data_uint8array).toString("hex");
+    console.log("Txid in hex: " + data_uint8array_to_hex);
 
-      const uint8array_encoded = new TextEncoder().encode(
-        data_uint8array_to_hex
-      );
-      console.log(
-        "Txid encoded in uint8array with TextEncoder().encode : " +
-          uint8array_encoded
-      );
+    const uint8array_encoded = new TextEncoder().encode(data_uint8array_to_hex);
+    console.log(
+      "Txid encoded in uint8array with TextEncoder().encode : " +
+        uint8array_encoded
+    );
 
-      const { signature } = await provider.signMessage(
-        uint8array_encoded,
-        "utf8"
-      );
-      const signature_hex = Buffer.from(signature).toString("hex");
-      console.log("Signature in hex: " + signature_hex);
+    const { signature } = await provider.signMessage(
+      uint8array_encoded,
+      "utf8"
+    );
+    const signature_hex = Buffer.from(signature).toString("hex");
+    console.log("Signature in hex: " + signature_hex);
 
-      const result = verifyEd25519Signature(
-        uint8array_encoded,
-        signature_hex,
-        hexKey
-      );
-      console.log("verifyEd25519Signature: " + result);
+    const result = verifyEd25519Signature(
+      uint8array_encoded,
+      signature_hex,
+      hexKey
+    );
+    console.log("verifyEd25519Signature: " + result);
 
-      return [hexToUint8Array(signature_hex), uint8array_encoded];
-    } catch (err) {
-      console.warn(err);
-      addLog("Error: " + JSON.stringify(err));
-    }
+    const signature_uint8 = hexToUint8Array(signature_hex);
+
+    return { signature_uint8, uint8array_encoded };
   };
 
   return (
