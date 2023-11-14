@@ -30,7 +30,7 @@ import {
   getPKeyHexFromUint8Array,
   initOperation,
   sendLsigTxn,
-} from "./Algorand";
+} from "../Algorand";
 
 type DisplayEncoding = "utf8" | "hex";
 type PhantomEvent = "disconnect" | "connect";
@@ -73,14 +73,72 @@ const getProvider = (): PhantomProvider | undefined => {
   window.open("https://phantom.app/", "_blank");
 };
 
-const NETWORK = clusterApiUrl("mainnet-beta");
-
 function Home() {
+  const provider = getProvider();
+  const [logs, setLogs] = useState<string[]>([]);
+  const addLog = (log: string) => setLogs([...logs, log]);
+  const [, setConnected] = useState<boolean>(false);
+  const [hexKey, setHexKey] = useState<string>();
+  const [lsig, setLsig] = useState<string>();
+  useEffect(() => {
+    if (provider) {
+      provider.on("connect", () => {
+        setConnected(true);
+        addLog("Connected to wallet " + provider.publicKey?.toBase58());
+        console.log(provider.publicKey?.toBytes());
+        const hexValue = getPKeyHexFromUint8Array(
+          provider.publicKey?.toBytes()
+        );
+        setHexKey((v) => (v = hexValue));
+        console.log(hexValue);
+      });
+      provider.on("disconnect", () => {
+        setConnected(false);
+        addLog("Disconnected from wallet");
+      });
+      // try to eagerly connect
+      provider.connect({ onlyIfTrusted: true });
+      return () => {
+        provider.disconnect();
+      };
+    }
+  }, [provider]);
+
   return (
     <MainPageContainer>
-      <MButton text="Connect Wallet" />
-      <MButton text="Create Logic Signature" />
-      <MButton text="Fund Account" />
+      {provider && provider.publicKey ? (
+        <div>Wallet address: {provider.publicKey?.toBase58()}.</div>
+      ) : null}
+      <MButton
+        text="Connect Wallet"
+        onClick={async () => {
+          try {
+            const res = await provider?.connect();
+            addLog(JSON.stringify(res));
+          } catch (err) {
+            console.warn(err);
+            addLog("Error: " + JSON.stringify(err));
+          }
+        }}
+      />
+      <MButton
+        text="Create Logic Signature"
+        onClick={async () => {
+          const lsig = await createLogicSignatureEd25519(hexKey);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          setLsig((v) => (v = lsig.address()));
+          console.log(lsig);
+          console.log(lsig.address());
+        }}
+      />
+      <MButton
+        text="Fund Account"
+        onClick={async () => {
+          const sST = await initOperation(lsig).catch((err) =>
+            console.log(err)
+          );
+        }}
+      />
       <MButton text="Make Transaction" />
     </MainPageContainer>
   );

@@ -4,7 +4,7 @@ import { Buffer } from "buffer";
 
 const algod = algokit.getAlgoClient(algokit.getDefaultLocalNetConfig("algod"));
 
-const createLogicSignatureEd25519 = async (pk: string) => {
+const createLogicSignatureEd25519 = async (pk: string | undefined) => {
   const hexAddress = `0x` + pk;
   const smartSigSource = `#pragma version 9 \n arg 1 \n arg 0 \n byte ${hexAddress} \n ed25519verify_bare`; //txn TxID
   const result = await algod.compile(Buffer.from(smartSigSource)).do();
