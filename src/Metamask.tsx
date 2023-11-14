@@ -1,29 +1,22 @@
 import algosdk from "algosdk";
-import { useEffect, useState } from "react";
-
-import { Web3 } from "web3";
 import { stripHexPrefix } from "ethereumjs-util";
 import { Buffer } from "buffer";
 import { ed25519 } from "@noble/curves/ed25519";
 import sha3 from "js-sha3";
-
 import {
-  createAccount,
-  createLogicSignatureSecp256k1,
   fundLsig,
   createLsigTrx,
   sendTrx,
   createLogicSignatureEd25519,
 } from "./Algorand";
 
-const web3 = new Web3(window.ethereum);
-
 /* DEFINISCO I TIPI PER LO STATO */
 
-interface IInputFields {
+/*interface IInputFields {
   verify: boolean | undefined;
   message: string;
-}
+}*/
+
 /* 
 const [inputFields, setInputFields] = useState<IInputFields>({
   verify: false,
@@ -42,71 +35,30 @@ useEffect(() => {
   }));
 }; */
 
-const message =
-  "!! WARNING !! : singning this message you allow this dapp to use your LogicSignature on Algorand";
 
-async function Todo() {
+async function signMessage(ethereum: any, account: string, message: string) {
   try {
-    console.log(
-      ">> POPULATING LOCAL NET WITH ACCOUNT ALICE (JUST FOR LOCALNET)"
+    const signature: string | undefined = stripHexPrefix(
+      await ethereum.personal.sign(message, account, "")
     );
-    const alice = await createAccount(10);
+    console.log(">> The signature hex value without 0x is : " + signature);
 
-    // PRIMA INTERAZIONE : CONNETTI IL WALLET
-    console.log(">> CONNCTING METAMASK");
-    const account: string = await connectToMetamask();
-    if (account === undefined) throw new Error(">> account is undefined");
+    if (signature === undefined) throw new Error(">> Undefined signature");
 
-    // SECONDA INTERAZIONE: SIGN E CREA LOGIC SIGNATURE
-    console.log(">> GENERATING KEYPAIR");
-    const privateKey = sha3.keccak256(await signMessage(account, message));
-    const publicKey = ed25519.getPublicKey(privateKey);
-
-    console.log(">> CREATING LOGIC SIGNATURE");
-    const logicSign = await createLogicSignatureEd25519(
-      Buffer.from(publicKey).toString("hex")
-    );
-    if (logicSign === undefined)
-      throw new Error(">> logic Signature is undefined");
-
-    // TERZA INTERAZIONE: DAI FONDI ALLA LOGIC SIGNATURE
-    console.log(
-      ">> BRINGING FUNDS FROM ALICE TO THE LOGIC SIGNATURE (JUST FOR LOCALNET)"
-    );
-    await fundLsig(alice, logicSign, 1e6);
-
-    // QUARTA INTERAZIONE: CREA E FIRMA LA TRANSAZIONE DELLA LOGIC SIGNATURE
-    console.log(
-      ">> CREATING A TRANSACTION FROM LOGIC SIGNATURE TO ALICE MOVING 100000 MICROALGOs"
-    );
-    const trxDetails: { idToSign: string; smartSigTnx: algosdk.Transaction } =
-      await createLsigTrx(alice, logicSign, 1e5);
-    if (trxDetails === undefined)
-      throw new Error(">> idToSign and smartSigTnx undefined");
-
-    console.log(">> SIGNING THE TRANSACTION ID");
-    const txIdSignature: Uint8Array = ed25519.sign(
-      trxDetails.idToSign,
-      privateKey
-    );
-    if (txIdSignature === undefined)
-      throw new Error(">> signature is undefined");
-
-    console.log(">> PERFORMING THE TRANSACTION");
-    const trx = await sendTrx(txIdSignature, trxDetails.smartSigTnx, logicSign);
-    console.log(trx);
+    return signature;
   } catch (error) {
-    console.error(">> Error in the TODO : ", error);
+    throw new Error(">> Error signing the message : " + error);
   }
 }
 
-async function connectToMetamask() {
+async function connectToMetamask( ethereum: any ) {
   try {
-    if (!window.ethereum) throw new Error(">> No window.etehrum");
+    console.log(">> CONNCTING METAMASK");
+    if (!ethereum) throw new Error(">> No window.etehrum");
 
     let accounts: string | any;
     // eslint-disable-next-line prefer-const
-    accounts = await window.ethereum.request({
+    accounts = await ethereum.request({
       method: "eth_requestAccounts",
     });
 
@@ -121,19 +73,64 @@ async function connectToMetamask() {
   }
 }
 
-async function signMessage(account: string, message: string) {
+async function createLogicSign( ethereum: any, account: string ) {
   try {
-    const signature: string | undefined = stripHexPrefix(
-      await web3.eth.personal.sign(message, account, "")
+    console.log(">> GENERATING KEYPAIR");
+    const message = "!! WARNING !! : singning this message you allow this dapp to use your LogicSignature on Algorand";
+    const privateKey = sha3.keccak256(await signMessage(ethereum, account, message));
+    const publicKey = ed25519.getPublicKey(privateKey);
+
+    console.log(">> CREATING LOGIC SIGNATURE");
+    const logicSign = await createLogicSignatureEd25519(
+      Buffer.from(publicKey).toString("hex")
     );
-    console.log(">> The signature hex value without 0x is : " + signature);
+    if (logicSign === undefined)
+      throw new Error(">> logic Signature is undefined");
 
-    if (signature === undefined) throw new Error(">> Undefined signature");
-
-    return signature;
+    return logicSign
   } catch (error) {
-    throw new Error(">> Error signing the message : " + error);
+    throw new Error(">> Error creation logic Signature : " + error);
   }
 }
 
-export { Todo };
+async function giveFoundLogicSign(from: algosdk.Account, logicSign: algosdk.LogicSig) {
+  try{
+    console.log( ">> BRINGING FUNDS FROM ALICE TO THE LOGIC SIGNATURE (JUST FOR LOCALNET)" );
+    await fundLsig(from, logicSign, 1e6)
+  } catch (error) {
+    throw new Error(">> Error give found to logic Signature : " + error);
+  }
+  
+}
+
+async function create_sign_transaction(from: algosdk.Account, logicSign: algosdk.LogicSig, privateKey: string) {
+  try {
+    console.log( ">> CREATING A TRANSACTION FROM LOGIC SIGNATURE TO ALICE MOVING 100000 MICROALGOs");
+    const trxDetails: { idToSign: string; smartSigTnx: algosdk.Transaction } =
+      await createLsigTrx(from, logicSign, 1e5);
+    if (trxDetails === undefined)
+      throw new Error(">> idToSign and smartSigTnx undefined");
+
+    console.log(">> SIGNING THE TRANSACTION ID");
+    const txIdSignature: Uint8Array = ed25519.sign(
+      trxDetails.idToSign,
+      privateKey
+    );
+    if (txIdSignature === undefined)
+      throw new Error(">> signature is undefined");
+
+    console.log(">> PERFORMING THE TRANSACTION");
+    const trx = await sendTrx(txIdSignature, trxDetails.smartSigTnx, logicSign);
+    
+    return trx
+  } catch (error) {
+    throw new Error(">> Error creating and signing the transaction : " + error);
+  }
+}
+
+export { 
+  connectToMetamask,
+  createLogicSign,
+  giveFoundLogicSign,
+  create_sign_transaction
+};
