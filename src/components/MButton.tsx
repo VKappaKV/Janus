@@ -56,7 +56,7 @@ const ButtonTxt = styled.p`
 `;
 
 interface MButtonProps {
-  icon: JSX.Element | undefined;
+  icon?: JSX.Element | undefined;
   text: string;
   onClick?: () => void;
 }

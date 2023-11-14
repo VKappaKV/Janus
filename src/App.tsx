@@ -1,10 +1,12 @@
 import "./App.css";
-import Home from "./components/Home";
-import { WalletContextProvider } from "./components/WalletContext";
-import Provider from "./components/Provider";
 import { MetaMaskProvider } from "@metamask/sdk-react";
+import MButton from "./components/MButton";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    window.process = { ...window.process };
+  }, []);
   return (
     <MetaMaskProvider
       debug={false}
@@ -19,7 +21,19 @@ function App() {
         },
       }}
     >
-      <Home />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "20px",
+          height: "100px",
+        }}
+      >
+        <MButton text="Create Lsig" />
+        <MButton text="Fund Lsig" />
+        <MButton text="Sign Txn" />
+      </div>
     </MetaMaskProvider>
   );
 }
