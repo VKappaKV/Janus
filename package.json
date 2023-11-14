@@ -10,8 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@algorandfoundation/algokit-utils": "^4.1.0",
+    "@metamask/sdk-react": "^0.12.1",
+    "algosdk": "^2.7.0",
+    "buffer": "^6.0.3",
+    "ethereumjs-util": "^7.1.5",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "web3": "^4.2.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
@@ -22,10 +28,10 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "typescript": "^5.0.2",
     "styled-components": "^6.1.0",
     "sweetalert2": "^11.9.0",
     "sweetalert2-react-content": "^5.0.7",
+    "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
 }

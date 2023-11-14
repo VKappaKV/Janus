@@ -49,7 +49,7 @@ const NavbarElementBtn = styled.div<{ isMenuOpen: boolean }>`
 `;
 
 interface NavbarProps {
-  handleMenuToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  handleMenuToggle: () => void;
   isMenuOpen: boolean;
 }
 

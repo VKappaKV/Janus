@@ -1,7 +1,5 @@
-import React, { useState } from "react";
 import styled from "styled-components";
-import { IconBxsDownArrow } from "../Icons";
-import CardButton from "./CardButton";
+import { AssetType } from "../Defaults";
 
 const CardContainer = styled.div`
   height: 80%;
@@ -12,12 +10,13 @@ const CardContainer = styled.div`
   justify-content: center;
   box-sizing: border-box;
   background-color: var(--c-primary);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 1rem;
   margin: 0;
   padding: 1rem;
   gap: 1rem;
 `;
-
+/* 
 const CardTxt = styled.p`
   font-family: var(--f-montserrat);
   font-size: 1rem;
@@ -36,10 +35,9 @@ const CardTopSection = styled.div`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-`;
+`; */
 
 const CardMiddleSectionContainer = styled.div`
-  background-color: #e1f3ff;
   height: 80%;
   width: 100%;
   display: flex;
@@ -47,14 +45,24 @@ const CardMiddleSectionContainer = styled.div`
   align-items: center;
   box-sizing: border-box;
   border-radius: 1rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   gap: 1rem;
   margin: 0;
-  padding: 0.5rem 0 0.5rem 0;
+  padding: 0.5rem;
   overflow: auto;
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
-    display: visible;
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(108, 143, 231, 0.7);
+    border-radius: 10px;
   }
 `;
 
@@ -120,7 +128,7 @@ const CardMiddleRight = styled.div`
     padding: 0;
   }
 `;
-
+/* 
 const CardBottomSection = styled.div`
   height: 20%;
   width: 100%;
@@ -132,9 +140,13 @@ const CardBottomSection = styled.div`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-`;
+`; */
 
-function WalletCard({ assets }) {
+interface WalletCardProps {
+  assets: AssetType[];
+}
+
+const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
   return (
     <CardContainer>
       <CardMiddleSectionContainer>
@@ -154,6 +166,6 @@ function WalletCard({ assets }) {
       </CardMiddleSectionContainer>
     </CardContainer>
   );
-}
+};
 
 export default WalletCard;

@@ -10,8 +10,6 @@ export const defaultWallets = [
       />
     ),
     name: "METAMASK",
-    balance: 1.234,
-    dollarValue: 10000.0,
   },
   {
     icon: (
@@ -22,10 +20,13 @@ export const defaultWallets = [
       />
     ),
     name: "PHANTOM",
-    balance: 10.567,
-    dollarValue: 1000.0,
   },
 ];
+
+export interface Wallet {
+  icon: JSX.Element;
+  name: string;
+}
 
 export const defaultAssets = [
   {
@@ -80,3 +81,10 @@ export const defaultAlgorandAssets = [
     dollarValue: 10.0,
   },
 ];
+
+export interface AssetType {
+  icon: JSX.Element;
+  name: string;
+  balance: number;
+  dollarValue: number;
+}

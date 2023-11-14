@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import WalletCard from "./WalletCard";
-import { defaultAssets } from "../Defaults";
+import { defaultAssets, defaultAlgorandAssets } from "../Defaults";
 import AlgorandCard from "./AlgorandCard";
+import { useState } from "react";
 
 const MainSectionContainer = styled.div`
   height: 55%;
@@ -39,10 +40,15 @@ const SectionCard = styled.div`
 `;
 
 function MainSection() {
+  const [showWalletAlgorand, SetShowWalletAlgorand] = useState(false);
   return (
     <MainSectionContainer>
       <SectionCard>
-        <WalletCard assets={defaultAssets} />
+        {showWalletAlgorand ? (
+          <WalletCard assets={defaultAlgorandAssets} />
+        ) : (
+          <WalletCard assets={defaultAssets} />
+        )}
       </SectionCard>
       <SectionDiagram>
         <AlgorandCard />

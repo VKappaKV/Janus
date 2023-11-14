@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { defaultWallets } from "../Defaults";
+import { Wallet, defaultWallets } from "../Defaults";
 
 const MenuContainer = styled.div`
   position: absolute;
