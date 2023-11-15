@@ -40,22 +40,23 @@ const SectionCard = styled.div`
   padding: 0;
 `;
 
-defaultAssets
+defaultAssets;
 
 function MainSection() {
   const [showWalletAlgorand, SetShowWalletAlgorand] = useState(false);
   return (
     <MainSectionContainer>
-      <SectionCard>
+      {/* <SectionCard>
         {showWalletAlgorand ? (
           <WalletCard assets={defaultAlgorandAssets} /> //getBilance() della logicSign o di phantom
         ) : (
           <WalletCard assets={defaultAssets} /> //getBilance() del mio wallet
-        )}
+        )}<WalletCard assets={defaultAssets} />
       </SectionCard>
       <SectionDiagram>
-        <AlgorandCard/>
-      </SectionDiagram>
+        
+      </SectionDiagram> */}
+      <AlgorandCard />
     </MainSectionContainer>
   );
 }

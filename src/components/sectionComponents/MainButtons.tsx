@@ -11,8 +11,11 @@ import {
   create_sign_transaction,
   giveFoundLogicSign,
 } from "../../Metamask";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import algosdk, { Account } from "algosdk";
+import { acctInfo } from "../../Algorand";
+import { WalletContext } from "../WalletContext";
+import { LsigContext } from "../LsigContext";
 
 const MainButtonsContainer = styled.div`
   height: 30%;
@@ -28,6 +31,8 @@ const MainButtonsContainer = styled.div`
 `;
 
 function MainButtons() {
+  const { setAddress } = useContext(LsigContext);
+  const { setValue } = useContext(WalletContext);
   const [alice, setAlice] = useState<Account | undefined>(undefined);
   const [account, setMyAccount] = useState<string | undefined>(undefined);
   const [logicSign, setLogicSign] = useState<algosdk.LogicSig | undefined>(
@@ -49,6 +54,8 @@ function MainButtons() {
           setLogicSign(result.logicSign);
           setPrivateKey(result.privateKey);
           setMyAccount(result.account);
+          setValue(true);
+          setAddress(result.logicSign.address());
         }}
       />
       <MButton

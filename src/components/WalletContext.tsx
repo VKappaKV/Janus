@@ -1,8 +1,8 @@
 import React, { createContext, useState, ReactNode } from "react";
 
 interface WalletContextProps {
-  value: number;
-  setValue: React.Dispatch<React.SetStateAction<number>>;
+  value: boolean;
+  setValue: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const WalletContext = createContext<WalletContextProps | undefined>(
@@ -16,7 +16,7 @@ interface WalletContextProviderProps {
 export const WalletContextProvider: React.FC<WalletContextProviderProps> = ({
   children,
 }) => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(false);
 
   return (
     <WalletContext.Provider value={{ value, setValue }}>

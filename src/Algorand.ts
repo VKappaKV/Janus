@@ -139,6 +139,11 @@ const sendTrx = async (
   return sendTrx;
 };
 
+export const acctInfo = async (account: string): Promise<number> => {
+  const balance = await algod.accountInformation(account).do();
+  console.log(balance);
+  return balance.amount();
+};
 export {
   createAccount,
   createLogicSignatureSecp256k1,

@@ -3,6 +3,7 @@ import { Wallet, defaultWallets } from "../Defaults";
 import { useSDK } from "@metamask/sdk-react";
 import { connectToMetamask } from "../../Metamask";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 export const ConnectionToast = Swal.mixin({
   toast: true,
@@ -236,7 +237,8 @@ interface WalletMenuProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletMenu: React.FC<WalletMenuProps> = () => {
-  const { sdk } = useSDK();
+  const [account, setAccount] = useState<string>();
+  const { sdk, connected } = useSDK();
   return (
     <MenuContainer>
       <MenuTitle>Select your wallet</MenuTitle>
@@ -253,7 +255,8 @@ const WalletMenu: React.FC<WalletMenuProps> = () => {
               key={index}
               onClick={async () => {
                 try {
-                  await connectToMetamask();
+                  const account = await connectToMetamask();
+                  setAccount(account);
                   fireConnectionToast(wallet.name);
                 } catch (error) {
                   fireErrorToast("Failed to connect to wallet");
