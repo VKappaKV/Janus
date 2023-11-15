@@ -56,6 +56,10 @@ export const defaultAlgorandAssets = [
     icon: <IconCoins fill="black" />,
     name: "ALGO",
   },
+  {
+    icon: <IconCoins fill="black" />,
+    name: "ETH",
+  }
 ];
 
 export interface AssetType {
