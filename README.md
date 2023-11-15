@@ -10,6 +10,8 @@ eg.
 # Install
 ## Prerequisites
 
+- Metamask browser extension properly configurated
+- Phantom browser extension properly configurated
 - git
 - npm 8.6+
 - node 18+
@@ -30,18 +32,29 @@ eg.
 
 Before installing this project you might be sure respect the above requirements. For convenience we invite you to go [here](https://github.com/algorandfoundation/algokit-cli) for instructions on how to install algokit
 
-Before cloning and running Janus you have an algokit localnet started:
+1. Clone Janus project:
+```bash
+git clone https://github.com/VKappaKV/Janus
+```
 
+2. Start algokit localnet:
 ```bash
 algokit localnet start
 ```
 
-You can try single wallet integration choicing separate wallet branch. 
-E.g. Metamask integration:
+3. Try single wallet integrations
 ```bash
-git clone https://github.com/VKappaKV/Janus
-git checkout Metamask
+git checkout Metamask   #To try the Metamask demo
+git checkout Phantom    #To try the Phantom demo
+```
+
+4. Install dependencies
+```bash
 npm install
+```
+
+5. Run Janus
+```bash
 npm run dev
 # open http://localhost:5173/ in your browser
 ```
