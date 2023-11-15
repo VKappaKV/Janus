@@ -18,7 +18,7 @@
 
 # Setup
 
-Before installing this project you might be sure respect the above requirements. For convenience we invite you to go [here]https://github.com/algorandfoundation/algokit-cli for instructions on how to install algokit
+Before installing this project you might be sure respect the above requirements. For convenience we invite you to go [here](https://github.com/algorandfoundation/algokit-cli){:target="_blank"} for instructions on how to install algokit
 
 ```bash
 git clone https://github.com/VKappaKV/Janus
