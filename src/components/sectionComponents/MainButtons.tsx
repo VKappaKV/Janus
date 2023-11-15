@@ -54,6 +54,7 @@ function MainButtons() {
           setLogicSign(result.logicSign);
           setPrivateKey(result.privateKey);
           setMyAccount(result.account);
+          acctInfo(result.logicSign.address());
           setValue(true);
           setAddress(result.logicSign.address());
         }}

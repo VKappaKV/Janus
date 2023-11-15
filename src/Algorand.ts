@@ -142,7 +142,8 @@ const sendTrx = async (
 export const acctInfo = async (account: string): Promise<number> => {
   const balance = await algod.accountInformation(account).do();
   console.log(balance);
-  return balance.amount();
+  console.log(balance.amount);
+  return balance.amount;
 };
 export {
   createAccount,

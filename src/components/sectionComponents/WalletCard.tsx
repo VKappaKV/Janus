@@ -158,7 +158,6 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
   useEffect(() => {
     if (value) {
       const balance = acctInfo(address);
-      setShowBalance((bal) => (bal = balance));
     }
   }, [value]);
   return (
@@ -172,7 +171,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
                 <h1>{asset.name}</h1>
               </CardMiddleLeft>
               <CardMiddleRight>
-                <h1>{showBalance}</h1>
+                <h1>{asset.balance}</h1>
               </CardMiddleRight>
             </CardMiddleSection>
           ))}
