@@ -83,7 +83,10 @@ function MainButtons() {
             alert(
               "La chiave privata non è stata estratta correttamente, riprova a creare la Logic Signature"
             );
-          else await create_sign_transaction(alice, logicSign, privateKey);
+          else {
+            await create_sign_transaction(alice, logicSign, privateKey);
+            setValue(!value);
+          }
         }}
       />
     </MainButtonsContainer>
