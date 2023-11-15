@@ -1,3 +1,4 @@
+import { getBalanceEth } from "../Metamask";
 import { IconCoins, IconWalletSidebar } from "./Icons";
 
 export const defaultWallets = [
@@ -38,7 +39,7 @@ export const defaultAssets = [
   {
     icon: <IconCoins fill="black" />,
     name: "ETH",
-    balance: 10.567,
+    balance: await getBalanceEth() || 10.567,
     dollarValue: 1000.0,
   },
   {

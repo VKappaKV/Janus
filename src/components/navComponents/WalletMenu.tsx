@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Wallet, defaultWallets } from "../Defaults";
+import { useSDK } from "@metamask/sdk-react";
 
 const MenuContainer = styled.div`
   position: absolute;
@@ -179,6 +180,7 @@ interface WalletMenuProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletMenu: React.FC<WalletMenuProps> = () => {
+  const { sdk } = useSDK();
   return (
     <MenuContainer>
       <MenuTitle>Select your wallet</MenuTitle>
@@ -191,7 +193,7 @@ const WalletMenu: React.FC<WalletMenuProps> = () => {
         </InnerBodyContainerUp>
         <InnerBtnContainer>
           {defaultWallets.map((wallet, index) => (
-            <InnerBtn key={index}>
+            <InnerBtn key={index} onClick={async()=>await sdk?.connect()}>
               {wallet.icon}
               {wallet.name}
             </InnerBtn>

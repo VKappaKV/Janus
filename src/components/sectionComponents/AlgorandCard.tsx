@@ -7,10 +7,10 @@ import withReactContent from "sweetalert2-react-content";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MySwal = withReactContent(Swal);
-const AlgorandCard = () => {
+const AlgorandCard = () => { //ho portato window fino a qui perchè poi servirà per estrarre informazioni sull'account con una funzione che metteremo in Metamask.tsx
   const [initCard, SetInitCard] = useState(false);
   if (!initCard)
-    return (
+    /*return (
       <MButton
         text=" Show Algorand Account"
         onClick={() => {
@@ -26,7 +26,7 @@ const AlgorandCard = () => {
         icon={undefined}
       />
     );
-  else return <WalletCard assets={defaultAlgorandAssets} />;
+  else*/ return <WalletCard assets={defaultAlgorandAssets} />;
 };
 
 export default AlgorandCard;

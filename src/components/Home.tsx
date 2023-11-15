@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import Section from "./Section";
@@ -35,11 +35,15 @@ function Home() {
     setIsMenuOpen((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    window.process = { ...window.process };
+  }, []);
+
   return (
     <MainPageContainer>
       <Navbar handleMenuToggle={handleMenuToggle} isMenuOpen={isMenuOpen} />{" "}
       {/* This function will run when the button is clicked. */}
-      {isMenuOpen && <WalletMenu setIsMenuOpen={setIsMenuOpen} />}{" "}
+      {isMenuOpen && <WalletMenu setIsMenuOpen={setIsMenuOpen}/>}{" "}
       {/* This function will only run if isMenuOpen is true. */}
       <BodyContainer>
         <Sidebar />

@@ -3,6 +3,7 @@ import WalletCard from "./WalletCard";
 import { defaultAssets, defaultAlgorandAssets } from "../Defaults";
 import AlgorandCard from "./AlgorandCard";
 import { useState } from "react";
+import MButton from "./MButton";
 
 const MainSectionContainer = styled.div`
   height: 55%;
@@ -39,19 +40,21 @@ const SectionCard = styled.div`
   padding: 0;
 `;
 
+defaultAssets
+
 function MainSection() {
   const [showWalletAlgorand, SetShowWalletAlgorand] = useState(false);
   return (
     <MainSectionContainer>
       <SectionCard>
         {showWalletAlgorand ? (
-          <WalletCard assets={defaultAlgorandAssets} />
+          <WalletCard assets={defaultAlgorandAssets} /> //getBilance() della logicSign o di phantom
         ) : (
-          <WalletCard assets={defaultAssets} />
+          <WalletCard assets={defaultAssets} /> //getBilance() del mio wallet
         )}
       </SectionCard>
       <SectionDiagram>
-        <AlgorandCard />
+        <AlgorandCard/>
       </SectionDiagram>
     </MainSectionContainer>
   );

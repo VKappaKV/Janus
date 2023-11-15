@@ -21,7 +21,7 @@ function Main() {
   return (
     <MainContainer>
       <MainTitle WalletName="Wallet Name" />
-      <MainSection />
+      <MainSection/>
       <MainButtons />
     </MainContainer>
   );
