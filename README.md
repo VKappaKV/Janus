@@ -1,4 +1,14 @@
-# Requirements
+**abstract**
+
+# What is Janus
+
+# Others topics
+eg.
+- Features
+- Changelog
+
+# Install
+## Prerequisites
 
 - git
 - npm 8.6+
@@ -16,7 +26,7 @@
 - Algosdk 2.7+
 - other dependencies defined in package.json
 
-# Setup and run
+## Setup and run
 
 Before installing this project you might be sure respect the above requirements. For convenience we invite you to go [here](https://github.com/algorandfoundation/algokit-cli) for instructions on how to install algokit
 
@@ -35,3 +45,4 @@ npm install
 npm run dev
 # open http://localhost:5173/ in your browser
 ```
+
