@@ -43,14 +43,16 @@ const getPKeyHexFromUint8Array = (uint8pk: Uint8Array | undefined) => {
   return Buffer.from(key).toString("hex");
 };
 
-const initOperation = async (lsig: LogicSig) => {
+const initOperation = async (lsig: LogicSig | undefined) => {
   const mnemonic =
     "great purpose initial want current toast timber return situate execute shuffle clutch truth easy dog pause shift regular page mind suit swift actor absorb release";
   const alice = algosdk.mnemonicToSecretKey(mnemonic);
 
   const suggestedParams = await algod.getTransactionParams().do();
+  console.log("GET SUGGESTED PARAMS FOR TRANSACTION: ", suggestedParams);
 
   const kmd = algokit.getAlgoKmdClient(algokit.getDefaultLocalNetConfig("kmd"));
+  console.log("INITIALIZE KMD TO GET FUNDING ACCOUNT");
 
   await algokit.ensureFunded(
     {
@@ -61,15 +63,23 @@ const initOperation = async (lsig: LogicSig) => {
     kmd
   );
 
-  await fundLsig(alice, lsig, suggestedParams);
+  console.log("ENSURE ACCOUNT IS FUNDED");
 
+  await fundLsig(alice, lsig!, suggestedParams);
+};
+
+const forgeTxn = async (lsig: LogicSig) => {
+  const mnemonic =
+    "great purpose initial want current toast timber return situate execute shuffle clutch truth easy dog pause shift regular page mind suit swift actor absorb release";
+  const alice = algosdk.mnemonicToSecretKey(mnemonic);
+  const suggestedParams = await algod.getTransactionParams().do();
+  console.log("GET SUGGESTED PARAMS FOR TRANSACTION: ", suggestedParams);
   const smartSigTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-    from: lsig.address(),
+    from: lsig!.address(),
     to: alice.addr,
     amount: 0.1e6,
     suggestedParams,
   });
-
   return smartSigTxn;
 };
 
@@ -97,5 +107,6 @@ export {
   createLogicSignatureEd25519,
   getPKeyHexFromUint8Array,
   initOperation,
+  forgeTxn,
   sendLsigTxn,
 };
