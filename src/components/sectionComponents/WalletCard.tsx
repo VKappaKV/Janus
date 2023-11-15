@@ -4,6 +4,8 @@ import { WalletContext } from "../WalletContext";
 import { useContext, useEffect, useState } from "react";
 import { acctInfo } from "../../Algorand";
 import { LsigContext } from "../LsigContext";
+import { useSDK } from "@metamask/sdk-react";
+import { getBalanceEth } from "../../Metamask";
 
 const CardContainer = styled.div`
   height: 80%;
@@ -154,17 +156,28 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
   const { address } = useContext(LsigContext);
   const { value } = useContext(WalletContext);
   const [showBalance, setShowBalance] = useState<number>(0);
+  const [showMyBalance, setShowMYBalance] = useState<number>(10);
+
+  const { connected } = useSDK();
 
   useEffect(() => {
-  const fetchBalance = async () => {
-    if (address) {
-      const balance = await acctInfo(address);
-      setShowBalance(balance);
-    }
-  };
+    const fetchBalance = async () => {
+      if (address) {
+        const balance = await acctInfo(address);
+        setShowBalance(balance);
+      }
+    };
+    fetchBalance();
+  }, [value]);
 
-  fetchBalance();
-}, [value]);
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const balance = await getBalanceEth();
+      setShowMYBalance(balance);
+    };
+    fetchBalance();
+  }, [connected]);
+
   return (
     <CardContainer>
       <CardMiddleSectionContainer>
@@ -176,7 +189,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
                 <h1>{asset.name}</h1>
               </CardMiddleLeft>
               <CardMiddleRight>
-                <h1>{showBalance.toLocaleString('it-IT')}</h1>
+                <h1>{asset.name=='ALGO' ? showBalance.toLocaleString('it-IT'): showMyBalance.toLocaleString('it-IT')}</h1>
               </CardMiddleRight>
             </CardMiddleSection>
           ))}
