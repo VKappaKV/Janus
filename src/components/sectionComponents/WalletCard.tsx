@@ -157,14 +157,14 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
 
   useEffect(() => {
   const fetchBalance = async () => {
-    if (value) {
+    if (address) {
       const balance = await acctInfo(address);
       setShowBalance(balance);
     }
   };
 
   fetchBalance();
-}, [value, address]);
+}, [value]);
   return (
     <CardContainer>
       <CardMiddleSectionContainer>

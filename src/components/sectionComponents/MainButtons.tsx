@@ -32,7 +32,7 @@ const MainButtonsContainer = styled.div`
 
 function MainButtons() {
   const { setAddress } = useContext(LsigContext);
-  const { setValue } = useContext(WalletContext);
+  const { value, setValue } = useContext(WalletContext);
   const [alice, setAlice] = useState<Account | undefined>(undefined);
   const [account, setMyAccount] = useState<string | undefined>(undefined);
   const [logicSign, setLogicSign] = useState<algosdk.LogicSig | undefined>(
@@ -55,7 +55,7 @@ function MainButtons() {
           setPrivateKey(result.privateKey);
           setMyAccount(result.account);
           acctInfo(result.logicSign.address());
-          setValue(true);
+          setValue(!value);
           setAddress(result.logicSign.address());
         }}
       />
@@ -65,7 +65,10 @@ function MainButtons() {
         onClick={async () => {
           if (logicSign === undefined)
             alert("Bisogna creare la logic Signature prima");
-          else setAlice(await giveFoundLogicSign(logicSign));
+          else {
+            setAlice(await giveFoundLogicSign(logicSign));
+            setValue(!value);
+          }
         }}
       />
       <MButton
