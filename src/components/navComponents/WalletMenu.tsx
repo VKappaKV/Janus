@@ -2,12 +2,26 @@ import styled from "styled-components";
 import { Wallet, defaultWallets } from "../Defaults";
 import { useSDK } from "@metamask/sdk-react";
 import { connectToMetamask } from "../../Metamask";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
-const ConnectionToast = Swal.mixin({
+export const ConnectionToast = Swal.mixin({
   toast: true,
-  width: '20rem',
-  position: 'center',
+  width: "20rem",
+  position: "center",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: false,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+
+export const TransactionToast = Swal.mixin({
+  toast: true,
+  width: "30rem",
+  heightAuto: false,
+  position: "center",
   showConfirmButton: false,
   timer: 2000,
   timerProgressBar: false,
@@ -19,15 +33,15 @@ const ConnectionToast = Swal.mixin({
 
 function fireConnectionToast(walletName: string) {
   ConnectionToast.fire({
-    icon: 'success',
-    title: 'Connected to ' + walletName + '',
+    icon: "success",
+    title: "Connected to " + walletName + "",
   });
-};
+}
 
 const ErrorToast = Swal.mixin({
   toast: true,
-  width: '20rem',
-  position: 'center',
+  width: "20rem",
+  position: "center",
   showConfirmButton: false,
   timer: 2000,
   timerProgressBar: false,
@@ -39,10 +53,10 @@ const ErrorToast = Swal.mixin({
 
 function fireErrorToast(message: string) {
   ErrorToast.fire({
-    icon: 'error',
+    icon: "error",
     title: message,
   });
-};
+}
 
 const MenuContainer = styled.div`
   position: absolute;
@@ -235,14 +249,17 @@ const WalletMenu: React.FC<WalletMenuProps> = () => {
         </InnerBodyContainerUp>
         <InnerBtnContainer>
           {defaultWallets.map((wallet, index) => (
-            <InnerBtn key={index} onClick={async()=>{
-              try {
-                await connectToMetamask();
-                fireConnectionToast(wallet.name);
-              } catch (error) {
-                fireErrorToast("Failed to connect to wallet");
-              }              
-            }}>
+            <InnerBtn
+              key={index}
+              onClick={async () => {
+                try {
+                  await connectToMetamask();
+                  fireConnectionToast(wallet.name);
+                } catch (error) {
+                  fireErrorToast("Failed to connect to wallet");
+                }
+              }}
+            >
               {wallet.icon}
               {wallet.name}
             </InnerBtn>

@@ -1,7 +1,16 @@
 import styled from "styled-components";
-import { IconCoins, IconBankTransfer, IconSwapWallet } from "../Icons";
+import {
+  IconCoins,
+  IconBankTransfer,
+  IconSwapWallet,
+  IconFileSignature,
+} from "../Icons";
 import MButton from "./MButton";
-import { createLogicSign, create_sign_transaction, giveFoundLogicSign } from "../../Metamask";
+import {
+  createLogicSign,
+  create_sign_transaction,
+  giveFoundLogicSign,
+} from "../../Metamask";
 import { useState } from "react";
 import algosdk, { Account } from "algosdk";
 
@@ -21,32 +30,51 @@ const MainButtonsContainer = styled.div`
 function MainButtons() {
   const [alice, setAlice] = useState<Account | undefined>(undefined);
   const [account, setMyAccount] = useState<string | undefined>(undefined);
-  const [logicSign, setLogicSign] = useState<algosdk.LogicSig | undefined>(undefined);
+  const [logicSign, setLogicSign] = useState<algosdk.LogicSig | undefined>(
+    undefined
+  );
   const [privateKey, setPrivateKey] = useState<string | undefined>(undefined);
 
   return (
     <MainButtonsContainer>
-      <MButton icon={<IconCoins />} text="Create Logic Signature" 
-        onClick={async()=>  {
-          const result: {logicSign: algosdk.LogicSig, privateKey: string, account: string} = await createLogicSign()
-          setLogicSign(result.logicSign)
-          setPrivateKey(result.privateKey)
-          setMyAccount(result.account)
-        }} 
+      <MButton
+        icon={<IconFileSignature />}
+        text="Create Logic Signature"
+        onClick={async () => {
+          const result: {
+            logicSign: algosdk.LogicSig;
+            privateKey: string;
+            account: string;
+          } = await createLogicSign();
+          setLogicSign(result.logicSign);
+          setPrivateKey(result.privateKey);
+          setMyAccount(result.account);
+        }}
       />
-      <MButton icon={<IconBankTransfer />} text="Get Found to Logic SIgnature" 
-        onClick={async()=> {
-          if (logicSign===undefined) alert('Bisogna creare la logic Signature prima')
+      <MButton
+        icon={<IconCoins />}
+        text="Fund Logic Signature"
+        onClick={async () => {
+          if (logicSign === undefined)
+            alert("Bisogna creare la logic Signature prima");
           else setAlice(await giveFoundLogicSign(logicSign));
         }}
       />
-      <MButton icon={<IconSwapWallet />} text="Send Transaction" 
-      onClick={async()=> {
-        if (alice===undefined) alert('Serve un account alice, ridai i fondi alla transaction');
-        else if (logicSign===undefined) alert('Bisogna creare la logic Signature prima')
-        else if (privateKey===undefined) alert('La chiave privata non è stata estratta correttamente, riprova a creare la Logic Signature')
-        else await create_sign_transaction(alice, logicSign, privateKey);
-      }}/>
+      <MButton
+        icon={<IconSwapWallet />}
+        text="Send Transaction"
+        onClick={async () => {
+          if (alice === undefined)
+            alert("Serve un account alice, ridai i fondi alla transaction");
+          else if (logicSign === undefined)
+            alert("Bisogna creare la logic Signature prima");
+          else if (privateKey === undefined)
+            alert(
+              "La chiave privata non è stata estratta correttamente, riprova a creare la Logic Signature"
+            );
+          else await create_sign_transaction(alice, logicSign, privateKey);
+        }}
+      />
     </MainButtonsContainer>
   );
 }

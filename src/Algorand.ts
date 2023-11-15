@@ -72,17 +72,18 @@ const fundLsig = async (
     suggestedParams: await suggestedParams(),
   });
 
-  await algod.sendRawTransaction(fundSmartSigTxn.signTxn(alice.sk)).do();
+  const { txId } = await algod
+    .sendRawTransaction(fundSmartSigTxn.signTxn(alice.sk))
+    .do();
   await algosdk.waitForConfirmation(
     algod,
     fundSmartSigTxn.txID().toString(),
     3
   );
 
-  const result = await algod.accountInformation(lsig.address()).do();
-  console.log(
-    ">> Logic Signature is funded, the result is : " + JSON.stringify(result)
-  );
+  await algod.accountInformation(lsig.address()).do();
+  console.log(">> Logic Signature is funded, the result is : " + { txId });
+  return txId;
 };
 
 const createLsigTrx = async (
@@ -132,13 +133,9 @@ const sendTrx = async (
       signedSmartSigTxn
   );
 
-  await algod.sendRawTransaction(signedSmartSigTxn.blob).do();
+  const sendTrx = await algod.sendRawTransaction(signedSmartSigTxn.blob).do();
 
-  const sendTrx = await algosdk.waitForConfirmation(
-    algod,
-    signedSmartSigTxn.txID,
-    10
-  );
+  await algosdk.waitForConfirmation(algod, signedSmartSigTxn.txID, 10);
   return sendTrx;
 };
 

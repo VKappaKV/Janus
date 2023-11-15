@@ -10,7 +10,7 @@ export const defaultWallets = [
       />
     ),
     name: "METAMASK",
-  },
+  } /* ,
   {
     icon: (
       <IconWalletSidebar
@@ -20,7 +20,7 @@ export const defaultWallets = [
       />
     ),
     name: "PHANTOM",
-  },
+  }, */,
 ];
 
 export interface Wallet {

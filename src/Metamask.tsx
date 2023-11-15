@@ -10,15 +10,20 @@ import {
   createAccount,
 } from "./Algorand";
 import Web3 from "web3";
+import {
+  ConnectionToast,
+  TransactionToast,
+} from "./components/navComponents/WalletMenu";
+import { truncateAndDotify } from "./components/utility";
 
-async function createAlice() {  
-  console.log('>> POPULATING LOCAL NET WITH ACCOUNT ALICE (JUST FOR LOCALNET)')
+async function createAlice() {
+  console.log(">> POPULATING LOCAL NET WITH ACCOUNT ALICE (JUST FOR LOCALNET)");
   const alice = await createAccount(10);
 
-  return alice
+  return alice;
 }
 
-async function connectToMetamask( ) {
+async function connectToMetamask() {
   try {
     if (!window.ethereum) throw new Error(">> No window.etehrum");
 
@@ -56,13 +61,14 @@ async function connectToMetamask( ) {
   return balance
 }*/
 
-async function createLogicSign( ) {
-  try {    
-    const account = await (connectToMetamask());
+async function createLogicSign() {
+  try {
+    const account = await connectToMetamask();
     if (account === undefined) throw new Error(">> Undefined account value");
-    
+
     console.log(">> GENERATING KEYPAIR");
-    const message = "!! WARNING !! : singning this message you allow this dapp to use your LogicSignature on Algorand";
+    const message =
+      "!! WARNING !! : singning this message you allow this dapp to use your LogicSignature on Algorand";
     const privateKey = sha3.keccak256(await signMessage(account, message));
     const publicKey = ed25519.getPublicKey(privateKey);
 
@@ -73,21 +79,32 @@ async function createLogicSign( ) {
     if (logicSign === undefined)
       throw new Error(">> logic Signature is undefined");
 
-    return {logicSign, privateKey, account}
+    ConnectionToast.fire({
+      icon: "success",
+      title: `Created Logic Signature ${truncateAndDotify(
+        logicSign.address()
+      )}`,
+    });
+
+    return { logicSign, privateKey, account };
   } catch (error) {
     throw new Error(">> Error creation logic Signature : " + error);
   }
 }
 
-async function signMessage( account: string, message: string ) {
+async function signMessage(account: string, message: string) {
   try {
     if (!window.ethereum) throw new Error(">> No window.etehrum");
     const web3 = new Web3(window.ethereum);
 
-    let signature: string | undefined = await web3.eth.personal.sign(message, account, "");
+    let signature: string | undefined = await web3.eth.personal.sign(
+      message,
+      account,
+      ""
+    );
     console.log(">> The signature hex value without 0x is : " + signature);
 
-    if (signature.includes('0x')) signature=signature.replace('0x','')
+    if (signature.includes("0x")) signature = signature.replace("0x", "");
 
     if (signature === undefined) throw new Error(">> Undefined signature");
 
@@ -98,21 +115,38 @@ async function signMessage( account: string, message: string ) {
 }
 
 async function giveFoundLogicSign(logicSign: algosdk.LogicSig) {
-  try{
+  try {
     const from = await createAlice();
 
-    console.log( ">> BRINGING FUNDS FROM ALICE TO THE LOGIC SIGNATURE (JUST FOR LOCALNET)" );
-    await fundLsig(from, logicSign, 1e6)
+    console.log(
+      ">> BRINGING FUNDS FROM ALICE TO THE LOGIC SIGNATURE (JUST FOR LOCALNET)"
+    );
+    const information = await fundLsig(from, logicSign, 1e6);
 
-    return from
+    TransactionToast.fire({
+      icon: "success",
+      title: `Account ${truncateAndDotify(
+        logicSign.address()
+      )} Funded: ${JSON.stringify(
+        information
+      )} \n CHECK TRANSACTION ON DAPPFLOW`,
+    });
+
+    return from;
   } catch (error) {
     throw new Error(">> Error give found to logic Signature : " + error);
-  }  
+  }
 }
 
-async function create_sign_transaction(from: algosdk.Account, logicSign: algosdk.LogicSig, privateKey: string) {
+async function create_sign_transaction(
+  from: algosdk.Account,
+  logicSign: algosdk.LogicSig,
+  privateKey: string
+) {
   try {
-    console.log( ">> CREATING A TRANSACTION FROM LOGIC SIGNATURE TO ALICE MOVING 100000 MICROALGOs");
+    console.log(
+      ">> CREATING A TRANSACTION FROM LOGIC SIGNATURE TO ALICE MOVING 100000 MICROALGOs"
+    );
     const trxDetails: { idToSign: string; smartSigTnx: algosdk.Transaction } =
       await createLsigTrx(from, logicSign, 1e5);
     if (trxDetails === undefined)
@@ -128,18 +162,25 @@ async function create_sign_transaction(from: algosdk.Account, logicSign: algosdk
 
     console.log(">> PERFORMING THE TRANSACTION");
     const trx = await sendTrx(txIdSignature, trxDetails.smartSigTnx, logicSign);
-    
-    return trx
+
+    TransactionToast.fire({
+      icon: "success",
+      title: `Account ${truncateAndDotify(
+        logicSign.address()
+      )} Funded: ${JSON.stringify(trx)} \n CHECK TRANSACTION ON DAPPFLOW`,
+    });
+
+    return trx;
   } catch (error) {
     throw new Error(">> Error creating and signing the transaction : " + error);
   }
 }
 
-export { 
+export {
   createAlice,
   connectToMetamask,
   //getBalanceEth,
   createLogicSign,
   giveFoundLogicSign,
-  create_sign_transaction
+  create_sign_transaction,
 };
