@@ -1,6 +1,63 @@
 import styled from "styled-components";
 import { Wallet, defaultWallets } from "../Defaults";
 import { useSDK } from "@metamask/sdk-react";
+import { connectToMetamask } from "../../Metamask";
+import Swal from "sweetalert2";
+import { useState } from "react";
+
+export const ConnectionToast = Swal.mixin({
+  toast: true,
+  width: "20rem",
+  position: "center",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: false,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+
+export const TransactionToast = Swal.mixin({
+  toast: true,
+  width: "30rem",
+  heightAuto: false,
+  position: "center",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: false,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+
+function fireConnectionToast(walletName: string) {
+  ConnectionToast.fire({
+    icon: "success",
+    title: "Connected to " + walletName + "",
+  });
+}
+
+const ErrorToast = Swal.mixin({
+  toast: true,
+  width: "20rem",
+  position: "center",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: false,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  },
+});
+
+function fireErrorToast(message: string) {
+  ErrorToast.fire({
+    icon: "error",
+    title: message,
+  });
+}
 
 const MenuContainer = styled.div`
   position: absolute;
@@ -180,7 +237,8 @@ interface WalletMenuProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletMenu: React.FC<WalletMenuProps> = () => {
-  const { sdk } = useSDK();
+  const [account, setAccount] = useState<string>();
+  const { sdk, connected } = useSDK();
   return (
     <MenuContainer>
       <MenuTitle>Select your wallet</MenuTitle>
@@ -193,7 +251,18 @@ const WalletMenu: React.FC<WalletMenuProps> = () => {
         </InnerBodyContainerUp>
         <InnerBtnContainer>
           {defaultWallets.map((wallet, index) => (
-            <InnerBtn key={index} onClick={async()=>await sdk?.connect()}>
+            <InnerBtn
+              key={index}
+              onClick={async () => {
+                try {
+                  const account = await connectToMetamask();
+                  setAccount(account);
+                  fireConnectionToast(wallet.name);
+                } catch (error) {
+                  fireErrorToast("Failed to connect to wallet");
+                }
+              }}
+            >
               {wallet.icon}
               {wallet.name}
             </InnerBtn>

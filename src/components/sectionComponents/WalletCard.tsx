@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { AssetType } from "../Defaults";
+import { WalletContext } from "../WalletContext";
+import { useContext, useEffect, useState } from "react";
+import { acctInfo } from "../../Algorand";
+import { LsigContext } from "../LsigContext";
 
 const CardContainer = styled.div`
   height: 80%;
@@ -147,6 +151,20 @@ interface WalletCardProps {
 }
 
 const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
+  const { address } = useContext(LsigContext);
+  const { value } = useContext(WalletContext);
+  const [showBalance, setShowBalance] = useState<number>(0);
+
+  useEffect(() => {
+  const fetchBalance = async () => {
+    if (address) {
+      const balance = await acctInfo(address);
+      setShowBalance(balance);
+    }
+  };
+
+  fetchBalance();
+}, [value]);
   return (
     <CardContainer>
       <CardMiddleSectionContainer>
@@ -158,8 +176,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
                 <h1>{asset.name}</h1>
               </CardMiddleLeft>
               <CardMiddleRight>
-                <h1>{asset.balance}</h1>
-                <h2>${(asset.balance * asset.dollarValue).toFixed(2)}</h2>
+                <h1>{showBalance.toLocaleString('it-IT')}</h1>
               </CardMiddleRight>
             </CardMiddleSection>
           ))}
