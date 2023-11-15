@@ -1,5 +1,4 @@
 import algosdk from "algosdk";
-import { stripHexPrefix } from "ethereumjs-util";
 import { Buffer } from "buffer";
 import { ed25519 } from "@noble/curves/ed25519";
 import sha3 from "js-sha3";
@@ -8,47 +7,15 @@ import {
   createLsigTrx,
   sendTrx,
   createLogicSignatureEd25519,
+  createAccount,
 } from "./Algorand";
+import Web3 from "web3";
 
-/* DEFINISCO I TIPI PER LO STATO */
+async function createAlice() {  
+  console.log('>> POPULATING LOCAL NET WITH ACCOUNT ALICE (JUST FOR LOCALNET)')
+  const alice = await createAccount(10);
 
-/*interface IInputFields {
-  verify: boolean | undefined;
-  message: string;
-}*/
-
-/* 
-const [inputFields, setInputFields] = useState<IInputFields>({
-  verify: false,
-  message: "Il tuo messaggio da firmare",
-});
-
-useEffect(() => {
-  window.process = { ...window.process };
-}, []); */
-
-/* SET A NEW VALUE TO THE STATE */
-/* const setValue = (key: string, value: any) => {
-  setInputFields((prevState) => ({
-    ...prevState,
-    [key]: value,
-  }));
-}; */
-
-
-async function signMessage(ethereum: any, account: string, message: string) {
-  try {
-    const signature: string | undefined = stripHexPrefix(
-      await ethereum.personal.sign(message, account, "")
-    );
-    console.log(">> The signature hex value without 0x is : " + signature);
-
-    if (signature === undefined) throw new Error(">> Undefined signature");
-
-    return signature;
-  } catch (error) {
-    throw new Error(">> Error signing the message : " + error);
-  }
+  return alice
 }
 
 async function connectToMetamask( ethereum: any ) {
@@ -87,9 +54,27 @@ async function createLogicSign( ethereum: any, account: string ) {
     if (logicSign === undefined)
       throw new Error(">> logic Signature is undefined");
 
-    return logicSign
+    return {logicSign, privateKey}
   } catch (error) {
     throw new Error(">> Error creation logic Signature : " + error);
+  }
+}
+
+async function signMessage(ethereum: any, account: string, message: string) {
+  try {
+    if (!window.ethereum) throw new Error(">> No window.etehrum");
+    const web3 = new Web3(ethereum);
+
+    let signature: string | undefined = await web3.eth.personal.sign(message, account, "");
+    console.log(">> The signature hex value without 0x is : " + signature);
+
+    if (signature.includes('0x')) signature=signature.replace('0x','')
+
+    if (signature === undefined) throw new Error(">> Undefined signature");
+
+    return signature;
+  } catch (error) {
+    throw new Error(">> Error signing the message : " + error);
   }
 }
 
@@ -129,6 +114,7 @@ async function create_sign_transaction(from: algosdk.Account, logicSign: algosdk
 }
 
 export { 
+  createAlice,
   connectToMetamask,
   createLogicSign,
   giveFoundLogicSign,
