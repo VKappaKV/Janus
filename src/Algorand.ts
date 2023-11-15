@@ -140,10 +140,12 @@ const sendTrx = async (
 };
 
 export const acctInfo = async (account: string): Promise<number> => {
+  if (account == undefined) return 0;
   const balance = await algod.accountInformation(account).do();
   console.log(balance);
   console.log(balance.amount);
-  return balance.amount;
+  console.log(account);
+  return balance.amount / 1000;
 };
 export {
   createAccount,

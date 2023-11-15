@@ -55,7 +55,6 @@ export const defaultAlgorandAssets = [
   {
     icon: <IconCoins fill="black" />,
     name: "ALGO",
-    balance: 1.234,
   },
 ];
 

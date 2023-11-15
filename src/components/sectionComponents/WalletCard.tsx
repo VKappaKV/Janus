@@ -156,10 +156,15 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
   const [showBalance, setShowBalance] = useState<number>(0);
 
   useEffect(() => {
+  const fetchBalance = async () => {
     if (value) {
-      const balance = acctInfo(address);
+      const balance = await acctInfo(address);
+      setShowBalance(balance);
     }
-  }, [value]);
+  };
+
+  fetchBalance();
+}, [value, address]);
   return (
     <CardContainer>
       <CardMiddleSectionContainer>
@@ -171,7 +176,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
                 <h1>{asset.name}</h1>
               </CardMiddleLeft>
               <CardMiddleRight>
-                <h1>{asset.balance}</h1>
+                <h1>{showBalance.toLocaleString('it-IT')}</h1>
               </CardMiddleRight>
             </CardMiddleSection>
           ))}
