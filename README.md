@@ -1,27 +1,35 @@
-# React + TypeScript + Vite
+# Requirements
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- git
+- npm 8.6+
+- node 18+
+- typescript 5.0.2+
+- react 18.2+
+- vite 4.4.5+
+- openssl 3.0+
+- Algokit 4.1
+    - Python 3.10+
+    - pip 23+
+    - pipx 1.2.1+
+    - Docker 20+
+    - Docker compose 2.5+
+- Algosdk 2.7+
+- other dependencies defined in package.json
 
-Currently, two official plugins are available:
+# Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Before installing this project you might be sure respect the above requirements. For convenience we invite you to go [here]https://github.com/algorandfoundation/algokit-cli for instructions on how to install algokit
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+git clone https://github.com/VKappaKV/Janus
+cd Janus
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# Run
+
+```bash
+algokit localnet start
+npm run dev
+# open http://localhost:5173/ in your browser
+```
