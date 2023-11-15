@@ -16,20 +16,22 @@
 - Algosdk 2.7+
 - other dependencies defined in package.json
 
-# Setup
+# Setup and run
 
 Before installing this project you might be sure respect the above requirements. For convenience we invite you to go [here](https://github.com/algorandfoundation/algokit-cli) for instructions on how to install algokit
 
-```bash
-git clone https://github.com/VKappaKV/Janus
-cd Janus
-npm install
-```
-
-# Run
+Before cloning and running Janus you have an algokit localnet started:
 
 ```bash
 algokit localnet start
+```
+
+You can try single wallet integration choicing separate wallet branch. 
+E.g. Metamask integration:
+```bash
+git clone https://github.com/VKappaKV/Janus
+git checkout Metamask
+npm install
 npm run dev
 # open http://localhost:5173/ in your browser
 ```
