@@ -40,8 +40,7 @@ async function connectToMetamask( ) {
   }
 }
 
-async function getBalanceEth (){
-  console.log('sono qui')
+/*async function getBalanceEth (){
   if (!window.ethereum) throw new Error(">> No window.etehrum");
 
   const account = await (connectToMetamask());
@@ -55,7 +54,7 @@ async function getBalanceEth (){
   const balance=parseInt(balanceEth.replace('.',''))
   console.log(balance)
   return balance
-}
+}*/
 
 async function createLogicSign( ) {
   try {    
@@ -139,7 +138,7 @@ async function create_sign_transaction(from: algosdk.Account, logicSign: algosdk
 export { 
   createAlice,
   connectToMetamask,
-  getBalanceEth,
+  //getBalanceEth,
   createLogicSign,
   giveFoundLogicSign,
   create_sign_transaction

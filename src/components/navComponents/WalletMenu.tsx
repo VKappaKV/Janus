@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Wallet, defaultWallets } from "../Defaults";
 import { useSDK } from "@metamask/sdk-react";
+import { connectToMetamask } from "../../Metamask";
 
 const MenuContainer = styled.div`
   position: absolute;
@@ -193,7 +194,7 @@ const WalletMenu: React.FC<WalletMenuProps> = () => {
         </InnerBodyContainerUp>
         <InnerBtnContainer>
           {defaultWallets.map((wallet, index) => (
-            <InnerBtn key={index} onClick={async()=>await sdk?.connect()}>
+            <InnerBtn key={index} onClick={async()=>await connectToMetamask()}>
               {wallet.icon}
               {wallet.name}
             </InnerBtn>
