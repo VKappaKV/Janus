@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import WalletMenu from "./navComponents/WalletMenu";
 import { WalletContextProvider } from "./WalletContext";
 import { LsigContextProvider } from "./LsigContext";
+import { WalletConnectionContextProvider } from "./WalletConnectionContext";
 
 const MainPageContainer = styled.div`
   position: relative;
@@ -42,20 +43,22 @@ function Home() {
   }, []);
 
   return (
-    <WalletContextProvider>
-      <LsigContextProvider>
-        <MainPageContainer>
-          <Navbar handleMenuToggle={handleMenuToggle} isMenuOpen={isMenuOpen} />{" "}
-          {/* This function will run when the button is clicked. */}
-          {isMenuOpen && <WalletMenu setIsMenuOpen={setIsMenuOpen} />}{" "}
-          {/* This function will only run if isMenuOpen is true. */}
-          <BodyContainer>
-            <Sidebar />
-            <Section />
-          </BodyContainer>
-        </MainPageContainer>
-      </LsigContextProvider>
-    </WalletContextProvider>
+    <WalletConnectionContextProvider>
+      <WalletContextProvider>
+        <LsigContextProvider>
+          <MainPageContainer>
+            <Navbar handleMenuToggle={handleMenuToggle} isMenuOpen={isMenuOpen} />{" "}
+            {/* This function will run when the button is clicked. */}
+            {isMenuOpen && <WalletMenu setIsMenuOpen={setIsMenuOpen} />}{" "}
+            {/* This function will only run if isMenuOpen is true. */}
+            <BodyContainer>
+              <Sidebar />
+              <Section />
+            </BodyContainer>
+          </MainPageContainer>
+        </LsigContextProvider>
+      </WalletContextProvider>
+    </WalletConnectionContextProvider>
   );
 }
 

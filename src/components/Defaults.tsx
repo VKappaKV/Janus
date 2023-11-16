@@ -10,7 +10,7 @@ export const defaultWallets = [
       />
     ),
     name: "METAMASK",
-  } /* ,
+  }  ,
   {
     icon: (
       <IconWalletSidebar
@@ -20,7 +20,7 @@ export const defaultWallets = [
       />
     ),
     name: "PHANTOM",
-  }, */,
+  }, ,
 ];
 
 export interface Wallet {
@@ -59,7 +59,11 @@ export const defaultAlgorandAssets = [
   {
     icon: <IconCoins fill="black" />,
     name: "ETH",
-  }
+  },
+  {
+    icon: <IconCoins fill="black" />,
+    name: "SOL",
+  },
 ];
 
 export interface AssetType {

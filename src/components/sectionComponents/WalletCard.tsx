@@ -152,16 +152,27 @@ interface WalletCardProps {
   assets: AssetType[];
 }
 
+const getProvider = (): PhantomProvider | undefined => {
+  if ("solana" in window) {
+    const provider = (window as any).solana;
+    if (provider.isPhantom) {
+      return provider;
+    }
+  }
+  window.open("https://phantom.app/", "_blank");
+};
+
 const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
   const { address } = useContext(LsigContext);
   const { value } = useContext(WalletContext);
   const [showBalance, setShowBalance] = useState<number>(0);
-  const [showMyBalance, setShowMYBalance] = useState<number>(10);
+  const [showETHBalance, setShowETHBalance] = useState<number>(10);
 
   const { connected } = useSDK();
 
   useEffect(() => {
     const fetchBalance = async () => {
+      console.log(address, value)
       if (address) {
         const balance = await acctInfo(address);
         setShowBalance(balance);
@@ -173,7 +184,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
   useEffect(() => {
     const fetchBalance = async () => {
       const balance = await getBalanceEth();
-      setShowMYBalance(balance);
+      setShowETHBalance(balance);
     };
     fetchBalance();
   }, [connected]);
@@ -189,7 +200,8 @@ const WalletCard: React.FC<WalletCardProps> = ({ assets }) => {
                 <h1>{asset.name}</h1>
               </CardMiddleLeft>
               <CardMiddleRight>
-                <h1>{asset.name=='ALGO' ? showBalance.toLocaleString('it-IT'): showMyBalance.toLocaleString('it-IT')}</h1>
+                <h1>{asset.name=='ALGO' ? showBalance.toLocaleString('it-IT'): 
+                  showETHBalance.toLocaleString('it-IT')}</h1>
               </CardMiddleRight>
             </CardMiddleSection>
           ))}

@@ -3,7 +3,8 @@ import { Wallet, defaultWallets } from "../Defaults";
 import { useSDK } from "@metamask/sdk-react";
 import { connectToMetamask } from "../../Metamask";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { WalletConnectionContext } from "../WalletConnectionContext";
 
 export const ConnectionToast = Swal.mixin({
   toast: true,
@@ -20,7 +21,7 @@ export const ConnectionToast = Swal.mixin({
 
 export const TransactionToast = Swal.mixin({
   toast: true,
-  width: "30rem",
+  width: 'max-content',
   heightAuto: false,
   position: "center",
   showConfirmButton: false,
@@ -235,10 +236,22 @@ interface WalletMenuProps {
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const getProvider = (): PhantomProvider | undefined => {
+  if ("solana" in window) {
+    const provider = (window as any).solana;
+    if (provider.isPhantom) {
+      return provider;
+    }
+  }
+  window.open("https://phantom.app/", "_blank");
+};
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletMenu: React.FC<WalletMenuProps> = () => {
   const [account, setAccount] = useState<string>();
   const { sdk, connected } = useSDK();
+  const { value, setValue } = useContext(WalletConnectionContext);
+
   return (
     <MenuContainer>
       <MenuTitle>Select your wallet</MenuTitle>
@@ -255,9 +268,17 @@ const WalletMenu: React.FC<WalletMenuProps> = () => {
               key={index}
               onClick={async () => {
                 try {
-                  const account = await connectToMetamask();
-                  setAccount(account);
-                  fireConnectionToast(wallet.name);
+                  if(wallet.name=='METAMASK'){
+                    const account = await connectToMetamask();
+                    setAccount(account);
+                    fireConnectionToast(wallet.name);
+                  } else {
+                    const provider = getProvider()
+                    await provider?.connect()
+                    setAccount(provider.publicKey?.toBase58())
+                    console.log('connect Phantom')
+                  }
+                  setValue(wallet.name)
                 } catch (error) {
                   fireErrorToast("Failed to connect to wallet");
                 }
