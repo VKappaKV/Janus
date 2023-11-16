@@ -1,4 +1,6 @@
+import React, { useContext } from "react";
 import styled from "styled-components";
+import { LsigContext } from "../LsigContext";
 
 const MainTitleContainer = styled.div`
   height: 10%;
@@ -14,18 +16,22 @@ const MainTitleContainer = styled.div`
 
 const MainTitleText = styled.p`
   font-family: var(--f-montserrat);
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: black;
 `;
 
-interface MainTitleProps {
-  WalletName: string;
-}
-const MainTitle: React.FC<MainTitleProps> = ({ WalletName }) => {
+function MainTitle() {
+  const { address } = useContext(LsigContext);
+
   return (
     <MainTitleContainer>
-      <MainTitleText> {WalletName} </MainTitleText>
+      <MainTitleText>
+        {address
+          ? 'Address: ' + address.substring(0, 8) + '...' + address.substring(address.length - 8)
+          : 'Waiting for Logic Signature...'
+        }
+      </MainTitleText>
     </MainTitleContainer>
   );
 };
