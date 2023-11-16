@@ -30,6 +30,7 @@ git clone https://github.com/VKappaKV/Janus
 2. Start algokit localnet:
 ```bash
 algokit localnet start
+algokit explore # launch explorer
 ```
 
 3. Try single wallet integrations
@@ -57,6 +58,7 @@ Moving to the localhost URL **http://localhost:5173/**, a user inferface allows 
 - Create a logic signature related to the connected wallet
 - Provide funds to the logic signature
 - Create and sign transactions to the Algorand network
+- Check transaction with the dappflow explorer
 
 # How it works
 
